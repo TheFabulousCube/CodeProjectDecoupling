@@ -14,8 +14,9 @@ namespace CodeProjectDecoupling
 
         // Severity level :
         // 0: Log
-        // 1: Log & Email
-        // 2: SMS, Email, & Log
+        // 1: Email
+        // 2: SMS
+        // I'm assuming the Business requirements state to only do one of these things each time
         public void Notify(string message, int level)
         {
             // protect against invalid severity levels
