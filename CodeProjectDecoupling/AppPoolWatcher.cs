@@ -8,9 +8,6 @@ namespace CodeProjectDecoupling
 {
     class AppPoolWatcher
     {
-        EventLogWriter writer = null;
-        EmailSender email = null;
-        SMSAlert sms = null;
 
         // Severity level :
         // 0: Log
@@ -19,6 +16,7 @@ namespace CodeProjectDecoupling
         // I'm assuming the Business requirements state to only do one of these things each time
         public void Notify(string message, int level)
         {
+            INotificationAction action = null;
             // protect against invalid severity levels
             level = (level > 2) ? 2 : level;
             level = (level < 0) ? 0 : level;
@@ -26,31 +24,28 @@ namespace CodeProjectDecoupling
             {
                 case 2:
                     {
-                        if (sms == null)
+                        if (action == null)
                         {
-                            sms = new SMSAlert();
+                            action = new SMSAlert();
                         }
-                        sms.Text(message);
                         break;
                     }
                 case 1:
                     {
-                        if (email == null)
+                        if (action == null)
                         {
-                            email = new EmailSender();
+                            action = new EmailSender();
                         }
-                        email.Send(message);
 
                         break;
 
                     }
                 case 0:
                     {
-                        if (writer == null)
+                        if (action == null)
                         {
-                            writer = new EventLogWriter();
+                            action = new EventLogWriter();
                         }
-                        writer.Write(message);
                         break;
                     }
                 default:
@@ -58,31 +53,29 @@ namespace CodeProjectDecoupling
                         break;
                     }
             }
-            if (level >= 1)
-            {
-            }
+            action.ActOnNotification(message);
         }
     }
 
-    class EventLogWriter
+    class EventLogWriter : INotificationAction
     {
-        public void Write(string message)
+        public void ActOnNotification(string message)
         {
             Console.WriteLine($"Log Entry:{message}");
         }
     }
 
-    class EmailSender
+    class EmailSender : INotificationAction
     {
-        public void Send(string message)
+        public void ActOnNotification(string message)
         {
             Console.WriteLine($"Email Sent:{message}");
         }
     }
 
-    class SMSAlert
+    class SMSAlert : INotificationAction
     {
-        public void Text(string message)
+        public void ActOnNotification(string message)
         {
             Console.WriteLine($" SMS Alert: {message}");
         }
