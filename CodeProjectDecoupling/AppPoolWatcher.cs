@@ -9,15 +9,17 @@ namespace CodeProjectDecoupling
     class AppPoolWatcher
     {
         INotificationAction action = null;
-        // Using Constructor Injection
-        // Now we've put the responsibility of selecting which method back on the
-        // calling class (in this case, Main())
 
-            // With Method injection the AppPoolWatcher doesn't handle creating classes, they are passed in directly.
-
-        public void Notify(INotificationAction concreteAction, string message)
+        // The action is now a property that can be set publicly by the calling class
+        // Be careful if another class changes the parameter for 'Action'
+        public INotificationAction Action
         {
-            this.action = concreteAction;
+            get { return action; }
+            set { action = value; }
+        }
+        // Any class or method may send a message
+        public void Notify(string message)
+        {
             action.ActOnNotification(message);
         }
     }

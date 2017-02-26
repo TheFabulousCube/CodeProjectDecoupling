@@ -11,10 +11,13 @@ namespace CodeProjectDecoupling
         static Random rand = new Random();
         public static void Main(string[] args)
         {
-            AppPoolWatcher watcher = null;
-            // We're declaring that writer 'can do' ActOnNotification(), not that it 'is a' anything
-            INotificationAction writer;
-            for (int i = 0; i < 9; i++)
+            // In Proterty Injection, I've set the concrete classes as openly available
+            EventLogWriter writer = new EventLogWriter();
+            EmailSender sender = new EmailSender();
+            SMSAlert texter = new SMSAlert();
+            AppPoolWatcher watcher = new AppPoolWatcher(); 
+
+            for (int i = 0; i < 25; i++)
             {
                 int level = rand.Next(3);
                 // Severity level :
@@ -26,30 +29,21 @@ namespace CodeProjectDecoupling
                 {
                     case 2:
                         {
-                            // NOW we're declaring that writer 'is a' SMSSender
-                            writer = new SMSAlert();
-                            watcher = new AppPoolWatcher();
-                            // The calling class sends the action and the message directly to Notify()
-                            watcher.Notify(writer,"*** TEXT Alert ***");
+                            // One part of the program may decide which concrete class to use . . .
+                            watcher.Action = texter;
                             break;
                         }
                     case 1:
                         {
-                            // NOW we're declaring that writer 'is a' EmailSender
-                            writer = new EmailSender();
-                            watcher = new AppPoolWatcher();
-                            // The calling class sends the action and the message directly to Notify()
-                            watcher.Notify(writer,"** Email Alert **");
+                            // One part of the program may decide which concrete class to use . . .
+                            watcher.Action = sender;
                             break;
 
                         }
                     case 0:
                         {
-                            // NOW we're declaring that writer 'is a' EventLogWriter
-                            writer = new EventLogWriter();
-                            watcher = new AppPoolWatcher();
-                            // The calling class sends the action and the message directly to Notify()
-                            watcher.Notify(writer, "* Here's my message *");
+                            // One part of the program may decide which concrete class to use . . .
+                            watcher.Action = writer;
                             break;
                         }
                     default:
@@ -57,6 +51,8 @@ namespace CodeProjectDecoupling
                             break;
                         }
                 }
+                // . . . and then another part decides what parameter to send
+                watcher.Notify("Notification from Main()");
             }
 
 
