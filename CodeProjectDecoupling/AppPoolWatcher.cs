@@ -9,17 +9,48 @@ namespace CodeProjectDecoupling
     class AppPoolWatcher
     {
         INotificationAction action = null;
-        // Using Constructor Injection
-        // Now we've put the responsibility of selecting which method back on the
-        // calling class (in this case, Main())
-        public AppPoolWatcher(INotificationAction concreteImplemetation)
-        {
-            this.action = concreteImplemetation;
-        }
+ 
 
-        public void Notify(string message)
+        public void Notify(string message, int level)
         {
+            INotificationAction action = null;
+            // Severity level :
+            // 0: Log
+            // 1: Email
+            // 2: SMS
+            // I'm assuming the Business requirements state to only do one of these things each time
+            switch (level)
+            {
+                case 2:
+                    {
+                        if (action == null)
+                        {
+                            action = new SMSAlert();
+                        }
+                        break;
+                    }
+                case 1:
+                    {
+                        if (action == null)
+                        {
+                            action = new EmailSender();
+                        }
+                        break;
 
+                    }
+                case 0:
+                    {
+                        if (action == null)
+                        {
+                            action = new EventLogWriter();
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
             action.ActOnNotification(message);
         }
     }
