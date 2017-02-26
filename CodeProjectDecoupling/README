@@ -1,0 +1,2 @@
+This branch matches the requirements for adding Email and SMS support using the original class design.  
+Main() generates some random severity levels and passes them to the AppPoolWatcher.  The AppPoolWatcher decides what to do based on the severity level.  The AppPoolWatcher is tightly coupled to all 3 of the notification classes.
