@@ -9,13 +9,51 @@ namespace CodeProjectDecoupling
     class Program
     {
         static Random rand = new Random();
-        static AppPoolWatcher alert = new AppPoolWatcher();
         public static void Main(string[] args)
         {
+            AppPoolWatcher watcher = null;
+            // We're declaring that writer 'can do' ActOnNotification(), not that it 'is a' anything
+            INotificationAction writer;
             for (int i = 0; i < 9; i++)
             {
                 int level = rand.Next(3);
-                alert.Notify($"Hello there!, {i}, {level}", level);
+                // Severity level :
+                // 0: Log
+                // 1: Email
+                // 2: SMS
+                // I'm assuming the Business requirements state to only do one of these things each time
+                switch (level)
+                {
+                    case 2:
+                        {
+                            // NOW we're declaring that writer 'is a' SMSSender
+                            writer = new SMSAlert();
+                            watcher = new AppPoolWatcher(writer);
+                            watcher.Notify("*** TEXT Alert ***");
+                            break;
+                        }
+                    case 1:
+                        {
+                            // NOW we're declaring that writer 'is a' EmailSender
+                            writer = new EmailSender();
+                            watcher = new AppPoolWatcher(writer);
+                            watcher.Notify("** Email Alert **");
+                            break;
+
+                        }
+                    case 0:
+                        {
+                            // NOW we're declaring that writer 'is a' EventLogWriter
+                            writer = new EventLogWriter();
+                            watcher = new AppPoolWatcher(writer);
+                            watcher.Notify("* Here's my message *");
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
             }
 
 
