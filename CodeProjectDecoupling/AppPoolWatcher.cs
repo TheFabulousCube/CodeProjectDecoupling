@@ -57,27 +57,4 @@ namespace CodeProjectDecoupling
         }
     }
 
-    class EventLogWriter : INotificationAction
-    {
-        public void ActOnNotification(string message)
-        {
-            Console.WriteLine($"Log Entry:{message}");
-        }
-    }
-
-    class EmailSender : INotificationAction
-    {
-        public void ActOnNotification(string message)
-        {
-            Console.WriteLine($"Email Sent:{message}");
-        }
-    }
-
-    class SMSAlert : INotificationAction
-    {
-        public void ActOnNotification(string message)
-        {
-            Console.WriteLine($" SMS Alert: {message}");
-        }
-    }
 }
