@@ -28,16 +28,18 @@ namespace CodeProjectDecoupling
                         {
                             // NOW we're declaring that writer 'is a' SMSSender
                             writer = new SMSAlert();
-                            watcher = new AppPoolWatcher(writer);
-                            watcher.Notify("*** TEXT Alert ***");
+                            watcher = new AppPoolWatcher();
+                            // The calling class sends the action and the message directly to Notify()
+                            watcher.Notify(writer,"*** TEXT Alert ***");
                             break;
                         }
                     case 1:
                         {
                             // NOW we're declaring that writer 'is a' EmailSender
                             writer = new EmailSender();
-                            watcher = new AppPoolWatcher(writer);
-                            watcher.Notify("** Email Alert **");
+                            watcher = new AppPoolWatcher();
+                            // The calling class sends the action and the message directly to Notify()
+                            watcher.Notify(writer,"** Email Alert **");
                             break;
 
                         }
@@ -45,8 +47,9 @@ namespace CodeProjectDecoupling
                         {
                             // NOW we're declaring that writer 'is a' EventLogWriter
                             writer = new EventLogWriter();
-                            watcher = new AppPoolWatcher(writer);
-                            watcher.Notify("* Here's my message *");
+                            watcher = new AppPoolWatcher();
+                            // The calling class sends the action and the message directly to Notify()
+                            watcher.Notify(writer, "* Here's my message *");
                             break;
                         }
                     default:

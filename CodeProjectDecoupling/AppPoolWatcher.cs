@@ -12,14 +12,12 @@ namespace CodeProjectDecoupling
         // Using Constructor Injection
         // Now we've put the responsibility of selecting which method back on the
         // calling class (in this case, Main())
-        public AppPoolWatcher(INotificationAction concreteImplemetation)
-        {
-            this.action = concreteImplemetation;
-        }
 
-        public void Notify(string message)
-        {
+            // With Method injection the AppPoolWatcher doesn't handle creating classes, they are passed in directly.
 
+        public void Notify(INotificationAction concreteAction, string message)
+        {
+            this.action = concreteAction;
             action.ActOnNotification(message);
         }
     }
